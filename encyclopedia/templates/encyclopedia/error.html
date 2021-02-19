@@ -1,0 +1,7 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block content %}
+    {% if errors %}
+        <div class="alert alert-danger" role="alert"> {{ errors }} </div>
+    {% endif %}
+{% endblock %}

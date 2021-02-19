@@ -26,20 +26,18 @@ def entry(request, title):
 
 
 def search(request):
-    query = request.POST["q"]
-    try:
+    query = request.POST["q"].lower()
+    warning = ""
+    if util.get_entry(query):
         data = {"title": query,"content": markdown2.markdown(util.get_entry(query))}
         return render(request, "encyclopedia/entry.html", data)
-    except TypeError:
+    else :
         entries = util.list_entries()
-        def searching(entry):
-            if query.lower() in entry.lower():
-                return True
         results = list(filter(lambda e: query in e.lower(), entries))
         if not results:
-            results = "we found nothing"
-        data = {"q": query, "entries": results}
-        return render(request, "encyclopedia/entry.html", data)
+            warning = "0 search result for: "
+        data = {"query": query, "results": results, "warning": warning}
+        return render(request, "encyclopedia/search.html", data)
 
 
 
@@ -50,6 +48,7 @@ def create(request):
         })
     else:
         return search(request)
+
 
 def edit(request):
     if request.method == "GET":

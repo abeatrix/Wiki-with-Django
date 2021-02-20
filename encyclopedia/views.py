@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import markdown2
 from . import util
-
+from .forms import Entry_Form
+from random import shuffle
 
 def index(request):
     if request.method == "GET":
@@ -43,34 +44,35 @@ def search(request):
 
 def create(request):
     if request.method == "GET":
-        return render(request, "encyclopedia/index.html", {
+        return render(request, "encyclopedia/create.html", {
             "entries": util.list_entries()
         })
     else:
-        return search(request)
+        title_form = request.POST.get('title')
+        content_form = request.POST.get('content')
+        try:
+            util.save_entry(title_form, content_form)
+            return redirect("entry", title=title_form)
+        except:
+            return render(request, "encyclopedia/error.html", {"errors": "already in our database."})
 
 
-def edit(request):
+def edit(request, title):
     if request.method == "GET":
-        return render(request, "encyclopedia/index.html", {
-            "entries": util.list_entries()
-        })
+        content = util.get_entry(title)
+        data = {"title": title.strip(), "content": markdown2.markdown(content).strip()}
+        return render(request, "encyclopedia/edit.html", data)
     else:
-        return search(request)
-
-def delete(request):
-    if request.method == "GET":
-        return render(request, "encyclopedia/index.html", {
-            "entries": util.list_entries()
-        })
-    else:
-        return search(request)
+        content_form = request.POST.get('content')
+        util.save_entry(title, content_form)
+        return redirect("entry", title)
 
 
 def random(request):
-    if request.method == "GET":
-        return render(request, "encyclopedia/index.html", {
-            "entries": util.list_entries()
-        })
+    entries = util.list_entries()
+    if entries:
+        print(shuffle(entries))
+        ran = entries[0]
+        return redirect("entry", title=ran)
     else:
-        return search(request)
+        return render(request, "encyclopedia/error.html", {"errors": "This wiki is empty."})

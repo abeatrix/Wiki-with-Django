@@ -1,1 +1,29 @@
 {% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+Create New Post
+{% endblock %}
+
+
+{% block body %}
+<div class="container p-2">
+    <h1>Create New Entry</h1>
+    <hr/>
+    <div class="container m-5 p-5">
+        <form method="POST" id="createForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="TitleArea">Title</label>
+                <input class="form-control" type="text" name="title" placeholder="Title" id="TitleArea" required/>
+            </div>
+            <div class="form-group">
+                <label for="ContentArea">Content</label>
+                <textarea class="form-control" rows="10" id="ContentArea" name="content" placeholder="Write something here..." required></textarea>
+            </div>
+            <div class="text-right">
+                <button class="btn btn-primary" form="createForm" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

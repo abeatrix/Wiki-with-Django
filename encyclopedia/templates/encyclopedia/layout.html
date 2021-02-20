@@ -10,19 +10,19 @@
     </head>
     <body>
         <div class="row">
-            <div class="sidebar col-lg-2 col-md-3">
+            <div class="sidebar col-lg-2 col-md-3 p-4">
                 <h2>Wiki</h2>
-                <form action="/" method="POST" class="form">
+                <form action="/" method="POST" class="form" id="searchForm">
                      {% csrf_token %}
-                    <input class="form-control" type="text" name="q" placeholder="Search Encyclopedia">
+                    <input class="form-control" type="text" name="q" placeholder="Search Encyclopedia" form="searchForm">
                 </form>
-                <div>
+                <div class="p-2">
                     <a href="{% url 'index' %}">Home</a>
                 </div>
-                <div>
+                <div class="p-2">
                     <a href="{% url 'create' %}">Create New Page</a>
                 </div>
-                <div>
+                <div class="p-2">
                     <a href="{% url 'random' %}">Random Page</a>
                 </div>
                 {% block nav %}
@@ -33,6 +33,5 @@
                 {% endblock %}
             </div>
         </div>
-
     </body>
 </html>

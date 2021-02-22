@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 import markdown2
 from . import util
-from .forms import Entry_Form
 from random import shuffle
 
 def index(request):
@@ -44,17 +43,17 @@ def search(request):
 
 def create(request):
     if request.method == "GET":
-        return render(request, "encyclopedia/create.html", {
-            "entries": util.list_entries()
-        })
+        data = { "entries": util.list_entries() }
+        return render(request, "encyclopedia/create.html", data)
     else:
         title_form = request.POST.get('title')
         content_form = request.POST.get('content')
-        try:
+        if not util.get_entry(title_form):
             util.save_entry(title_form, content_form)
             return redirect("entry", title=title_form)
-        except:
-            return render(request, "encyclopedia/error.html", {"errors": "already in our database."})
+        else:
+            data = {"errors": "Entry with the same name exists"}
+            return render(request, "encyclopedia/error.html", data)
 
 
 def edit(request, title):
@@ -75,4 +74,5 @@ def random(request):
         ran = entries[0]
         return redirect("entry", title=ran)
     else:
-        return render(request, "encyclopedia/error.html", {"errors": "This wiki is empty."})
+        data = {"errors": "this wiki is empty"}
+        return render(request, "encyclopedia/error.html", data)
